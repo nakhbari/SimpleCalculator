@@ -1,16 +1,22 @@
 package com.nakhbari.simplecalculator;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
 	private static final int NUM_BUTTONS = 10;
+	private static final double MAX_NUMBER_VALUE = 10000000;
+	private static final double MIN_NUMBER_VALUE = -10000000;
 	TextView tvInputEquation;
+	TextView tvFormula;
 	Button bZero;
 	Button bNumArray[] = new Button[NUM_BUTTONS];
 	Button bAddition;
@@ -50,6 +56,7 @@ public class MainActivity extends ActionBarActivity {
 				sum = 0;
 				stringOperand = "0";
 				wasSumPressed = false;
+				stringFormula = "";
 			}
 
 			// Clear values if clear was pressed or we are beginning a new
@@ -59,7 +66,12 @@ public class MainActivity extends ActionBarActivity {
 				previousOperator = "";
 				sum = 0;
 				stringOperand = "0";
+				stringFormula = "";
+
+				// Reset both TextViews
 				tvInputEquation.setText(stringOperand);
+				tvFormula.setText(stringFormula);
+
 			} else {
 
 				if (isStringToBeEmptied) {
@@ -83,34 +95,55 @@ public class MainActivity extends ActionBarActivity {
 					stringOperand += tag.toString();
 					tvInputEquation.setText(stringOperand);
 				} else {
-					// This case is for any operations
+					boolean wasOperationPerformed = false;
 
+					// This case is for any operations
 					isStringToBeEmptied = true;
 
 					// Don't change the previous value if we get "=" more than
 					// once
-					if (!wasSumPressed) {
+					if (!wasSumPressed || tag.toString() != "Sum") {
 						previousOperand = Double.parseDouble(stringOperand);
 					}
 
-					if (sum == 0) {
+					if (sum == 0 && !wasSumPressed) {
 
 						sum = previousOperand;
-					} else if (previousOperator != "") {
+						stringFormula += FormatDoubleToString(sum);
+
+					} else if (previousOperator != "" && previousOperand != 0) {
+						wasOperationPerformed = true;
+
+						stringFormula += " " + previousOperator + " ";
+						stringFormula += FormatDoubleToString(previousOperand);
 
 						// do the operation
 						sum = ProcessOperation(previousOperator, sum,
 								previousOperand);
+
 					}
 
 					// record the operation
 					if (tag.toString() == "Sum") {
 						wasSumPressed = true;
 					} else {
+						wasSumPressed = false;
 						previousOperator = tag.toString();
 					}
 
+					// Temporarily show the operator chosen to the user
+					if (previousOperator != "" && !wasOperationPerformed) {
+						stringFormula += " " + previousOperator;
+					}
+
 					tvInputEquation.setText(FormatDoubleToString(sum));
+					tvFormula.setText(stringFormula);
+
+					// Remove operator from string, by removing the last 2 chars
+					if (previousOperator != "" && !wasOperationPerformed) {
+						stringFormula = stringFormula.substring(0,
+								stringFormula.length() - 2);
+					}
 				}
 
 			}
@@ -122,16 +155,16 @@ public class MainActivity extends ActionBarActivity {
 
 		// Do Calculation depending on the value of the operator
 		switch (operator) {
-		case "Addition":
+		case "+":
 			sum += operand;
 			break;
-		case "Subtraction":
+		case "-":
 			sum -= operand;
 			break;
-		case "Multiplication":
+		case "x":
 			sum *= operand;
 			break;
-		case "Division":
+		case "/":
 			sum /= operand;
 			break;
 		}
@@ -141,10 +174,17 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public static String FormatDoubleToString(double d) {
-		if (d == (int) d)
+		if (d == (int) d) {
 			return String.format("%d", (int) d);
-		else
-			return String.format("%.5f", d);
+		} else if (d > MAX_NUMBER_VALUE || d < MIN_NUMBER_VALUE) {
+			NumberFormat formatter = new DecimalFormat("0.######E0");
+			return formatter.format(d);
+
+		} else {
+			NumberFormat formatter = new DecimalFormat("0.######");
+			return formatter.format(d);
+			// return String.format("%.8f", d);
+		}
 	}
 
 	public static boolean IsInteger(String s) {
@@ -160,6 +200,7 @@ public class MainActivity extends ActionBarActivity {
 	// To initialize the connection between the layout and the variables in code
 	private void InitializeLayoutItems() {
 		tvInputEquation = (TextView) findViewById(R.id.tvInputEquation);
+		tvFormula = (TextView) findViewById(R.id.tvFormula);
 		bNumArray[0] = (Button) findViewById(R.id.bZero);
 		bNumArray[1] = (Button) findViewById(R.id.bOne);
 		bNumArray[2] = (Button) findViewById(R.id.bTwo);
@@ -185,16 +226,16 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 		bAddition.setOnClickListener(myListener);
-		bAddition.setTag("Addition");
+		bAddition.setTag("+");
 
 		bSubtraction.setOnClickListener(myListener);
-		bSubtraction.setTag("Subtraction");
+		bSubtraction.setTag("-");
 
 		bMultiplication.setOnClickListener(myListener);
-		bMultiplication.setTag("Multiplication");
+		bMultiplication.setTag("x");
 
 		bDivision.setOnClickListener(myListener);
-		bDivision.setTag("Division");
+		bDivision.setTag("/");
 
 		bSum.setOnClickListener(myListener);
 		bSum.setTag("Sum");
