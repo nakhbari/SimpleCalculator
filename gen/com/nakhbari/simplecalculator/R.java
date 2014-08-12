@@ -1294,7 +1294,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f050027;
         public static final int action_menu_presenter=0x7f050028;
         public static final int action_mode_close_button=0x7f050035;
-        public static final int action_settings=0x7f050064;
+        public static final int action_settings=0x7f050060;
         public static final int activity_chooser_view_content=0x7f050036;
         public static final int alignBounds=0x7f050002;
         public static final int alignMargins=0x7f050003;
@@ -1343,10 +1343,6 @@ containing a value of this type.
         public static final int ifRoom=0x7f05001c;
         public static final int image=0x7f050038;
         public static final int left=0x7f050006;
-        public static final int linear_layout_container_0=0x7f050063;
-        public static final int linear_layout_container_123=0x7f050062;
-        public static final int linear_layout_container_456=0x7f050061;
-        public static final int linear_layout_container_789=0x7f050060;
         public static final int listMode=0x7f050013;
         public static final int list_item=0x7f05003a;
         public static final int middle=0x7f050024;
@@ -1375,11 +1371,11 @@ containing a value of this type.
         public static final int start=0x7f050010;
         public static final int submit_area=0x7f05004a;
         public static final int tabMode=0x7f050014;
-        public static final int textview_output=0x7f05005f;
         public static final int title=0x7f05003c;
         public static final int top=0x7f050004;
         public static final int top_action_bar=0x7f050031;
         public static final int tvInputEquation=0x7f05004e;
+        public static final int tvResultingFormula=0x7f05005f;
         public static final int up=0x7f050032;
         public static final int useLogo=0x7f050015;
         public static final int vertical=0x7f050001;
